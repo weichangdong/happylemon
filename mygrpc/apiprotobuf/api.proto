@@ -1,0 +1,13 @@
+syntax = "proto3";
+package happylemon.api;
+
+service ApiConn {
+  rpc GrpcAct (GrpcRequest) returns (GrpcResponse) {}
+}
+message GrpcRequest {
+  string act = 1;
+  string para = 2;
+}
+message GrpcResponse {
+  string ret = 1;
+}
