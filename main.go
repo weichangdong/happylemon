@@ -35,7 +35,7 @@ func init() {
 	log.InitLog(conf.Config.Server.RootPath + conf.Config.Server.LogPath)
 	myredis.InitRedis()
 	models.InitMysqlPool(cfg)
-	if conf.Config.Grpc.GrpcSwitch {
+	if runMode == "http" && conf.Config.Grpc.GrpcSwitch {
 		go apigrpc.StartGrpc()
 	}
 

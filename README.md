@@ -25,6 +25,42 @@ Server Port :8888
 ```
 ./happylemon -mode=cmd -cmd=test
 ```
+本机mac简单压测了下,压测过程中,没有出现报错(压测过程中,./happylemon -mode=cmd -cmd=queue 一直运行中).
+```
+~$wrk -c 50 -t 8 -d 30 'http://127.0.0.1:8888/httpstatus?aes=1'
+Running 30s test @ http://127.0.0.1:8888/httpstatus?aes=1
+  8 threads and 50 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     2.33ms    3.29ms  33.91ms   86.58%
+    Req/Sec     4.90k     1.97k   10.43k    73.79%
+  1171008 requests in 30.07s, 176.51MB read
+Requests/sec:  38945.17
+Transfer/sec:      5.87MB
+```
+redis读取(切记使用的时候不能close,开始close了,压测好多报错,说是Client is close)
+```
+~$wrk -c 50 -t 8 -d 30 'http://127.0.0.1:8888/redis?aes=1'
+Running 30s test @ http://127.0.0.1:8888/redis?aes=1
+  8 threads and 50 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     3.40ms    4.69ms  78.50ms   89.05%
+    Req/Sec     2.51k   340.33     4.51k    81.42%
+  600990 requests in 30.05s, 89.98MB read
+Requests/sec:  19999.28
+Transfer/sec:      2.99MB
+```
+mysql读取
+```
+~$wrk -c 50 -t 8 -d 30 'http://127.0.0.1:8888/db?aes=1'
+Running 30s test @ http://127.0.0.1:8888/db?aes=1
+  8 threads and 50 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     3.89ms    5.63ms 103.44ms   83.94%
+    Req/Sec     1.19k   832.51     3.53k    89.81%
+  204011 requests in 30.08s, 114.01MB read
+Requests/sec:   6782.53
+Transfer/sec:      3.79MB
+```
 ### 安装
 ```
 我的golang版本
@@ -47,9 +83,10 @@ go clone github.com/weichangdong/happylemon 或者直接下载zip包
 2.有阿里云的oss上传功能.
 3.有生成二维码的功能(指定彩色logo).
 4.有普罗米修斯的监控.
-5.有aes加密解密.
-6.有grpc的功能,通信协议使用的protobuf(开关可控).
+5.有aes加密解密,开关可控不加密.
+6.有grpc的功能,通信协议使用的protobuf(开关可控)```protoc --go_out=plugins=grpc:. api.proto```.
 7.配置文件使用toml格式.
 8.用了```gitee.com/johng/gf```的框架的协成池的功能.
+9.使用了concurrentcache,内存级别的缓存,主要应用是接口频率的限制.
 ### 如有问题,可联系qq:545825965
 
